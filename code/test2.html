@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sổ Tay — sổ tay điện tử cho đời sinh viên</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EFEDE0;
+    --paper-deep:#E4E0C9;
+    --line:#D7D2B8;
+    --ink:#232A3D;
+    --ink-soft:#5B6478;
+    --ink-faint:#8A90A0;
+    --card:#FBFAF3;
+    --amber:#DD9F35;
+    --amber-deep:#B87E22;
+    --sage:#6E8A5E;
+    --sage-deep:#4F6B42;
+    --coral:#C85C6B;
+    --coral-deep:#A84250;
+    --violet:#7A6A9E;
+    --violet-deep:#5F5080;
+    --spine:#232A3D;
+    --radius-page: 4px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Be Vietnam Pro', sans-serif;
+    background:var(--paper-deep);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  button{font-family:inherit;cursor:pointer;}
+  input,textarea{font-family:inherit;}
+  ::selection{background:var(--amber);color:#fff;}
+
+  /* ===== AUTH SCREEN ===== */
+  #screen-auth{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns: 1.05fr 1fr;
+  }
+  .auth-cover{
+    background:var(--spine);
+    color:#EFEDE0;
+    padding:64px 56px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+    overflow:hidden;
+  }
+  .auth-cover::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle at 28px 0, transparent 11px, rgba(255,255,255,0.035) 12px, rgba(255,255,255,0.035) 13px, transparent 14px);
+    background-size: 100% 42px;
+    pointer-events:none;
+  }
+  .auth-brand{position:relative;z-index:1;}
+  .auth-brand .display{font-size:28px;color:#fff;}
+  .auth-brand .display span{color:var(--amber);}
+  .auth-illustration{position:relative;z-index:1; margin:32px 0;}
+  .auth-quote{position:relative;z-index:1; max-width:360px;}
+  .auth-quote .display{font-size:26px; line-height:1.35; color:#fff; font-weight:600;}
+  .auth-quote p{color:#B9BECB; margin-top:14px; font-size:14.5px; line-height:1.6;}
+  .feature-pills{display:flex; gap:10px; margin-top:26px; position:relative; z-index:1; flex-wrap:wrap;}
+  .pill{font-size:12.5px; padding:7px 12px; border-radius:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#DCDFE6;}
+  .pill.a{border-color:rgba(221,159,53,.5);} .pill.s{border-color:rgba(110,138,94,.55);} .pill.c{border-color:rgba(200,92,107,.55);} .pill.v{border-color:rgba(122,106,158,.55);}
+
+  .auth-formside{
+    background:var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    padding:40px 32px;
+  }
+  .auth-card{
+    width:100%; max-width:380px;
+  }
+  .auth-tabs{display:flex; gap:4px; margin-bottom:28px; border-bottom:1px solid var(--line);}
+  .auth-tab{
+    background:none; border:none; padding:10px 4px 12px; margin-right:22px;
+    font-size:15px; color:var(--ink-faint); font-weight:600; border-bottom:2px solid transparent;
+    transform:translateY(1px);
+  }
+  .auth-tab.active{color:var(--ink); border-bottom-color:var(--amber);}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:13px; color:var(--ink-soft); margin-bottom:6px; font-weight:600;}
+  .field input{
+    width:100%; padding:11px 13px; border:1.5px solid var(--line); border-radius:8px;
+    background:var(--card); font-size:14.5px; color:var(--ink); outline:none;
+  }
+  .field input:focus{border-color:var(--amber);}
+  .btn-primary{
+    width:100%; padding:12px; border:none; border-radius:8px;
+    background:var(--ink); color:#fff; font-weight:700; font-size:14.5px;
+    margin-top:6px;
+  }
+  .btn-primary:hover{background:#333d56;}
+  .auth-foot{font-size:13px; color:var(--ink-soft); text-align:center; margin-top:16px;}
+  .auth-foot button{background:none;border:none;color:var(--amber-deep);font-weight:700;padding:0;font-size:13px;}
+  .auth-hint{font-size:12px; color:var(--ink-faint); margin-top:22px; line-height:1.6; border-top:1px dashed var(--line); padding-top:16px;}
+
+  /* ===== APP SHELL ===== */
+  #app{display:none; min-height:100vh;}
+  #app.on{display:grid; grid-template-columns:88px 1fr;}
+
+  .spine{
+    background:var(--spine); position:relative;
+    display:flex; flex-direction:column; align-items:center;
+    padding:22px 0 18px;
+  }
+  .spine::before{
+    content:""; position:absolute; left:26px; top:0; bottom:0; width:0;
+    border-left:2px dashed rgba(255,255,255,0.12);
+  }
+  .spine-logo{
+    width:38px;height:38px;border-radius:9px; background:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; color:#232A3D; font-size:17px;
+    margin-bottom:34px;
+  }
+  .spine-nav{display:flex; flex-direction:column; gap:10px; flex:1; width:100%;}
+  .tab-btn{
+    background:none; border:none; color:#9EA4B4;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:12px 4px; font-size:11.5px; font-weight:600; position:relative;
+    width:100%;
+  }
+  .tab-btn .ic{width:22px;height:22px;}
+  .tab-btn.active{color:#fff;}
+  .tab-btn.active::after{
+    content:""; position:absolute; right:-1px; top:6px; bottom:6px; width:5px;
+    background:var(--tab-color, var(--amber)); border-radius:3px 0 0 3px;
+  }
+  .tab-btn[data-view="todo"].active{--tab-color:var(--amber);}
+  .tab-btn[data-view="habit"].active{--tab-color:var(--sage);}
+  .tab-btn[data-view="notes"].active{--tab-color:var(--coral);}
+  .tab-btn[data-view="calendar"].active{--tab-color:var(--violet);}
+
+  .spine-user{display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .avatar{
+    width:36px;height:36px;border-radius:50%; background:var(--amber);
+    display:flex;align-items:center;justify-content:center; color:#232A3D; font-weight:800; font-size:14px;
+  }
+  .logout-btn{background:none;border:none;color:#7D8497;font-size:10.5px;}
+  .logout-btn:hover{color:#fff;}
+
+  .main{
+    background-image: radial-gradient(var(--line) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    background-color:var(--paper);
+    padding:34px 44px 60px;
+    min-height:100vh;
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;
+    flex-wrap:wrap; gap:14px;
+  }
+  .topbar .greet .display{font-size:26px;}
+  .topbar .date{color:var(--ink-soft); font-size:13.5px; margin-top:4px;}
+  .topbar-right{display:flex; align-items:center; gap:14px;}
+  .bell-wrap{position:relative;}
+  .icon-btn{
+    width:40px;height:40px;border-radius:50%; border:1.5px solid var(--line); background:var(--card);
+    display:flex;align-items:center;justify-content:center; position:relative;
+  }
+  .dot-badge{position:absolute; top:6px; right:7px; width:8px;height:8px;border-radius:50%; background:var(--coral); border:2px solid var(--paper);}
+  .bell-panel{
+    display:none; position:absolute; right:0; top:48px; width:290px; background:var(--card);
+    border:1px solid var(--line); border-radius:10px; padding:12px; box-shadow:0 14px 30px rgba(35,42,61,.14); z-index:5;
+  }
+  .bell-panel.open{display:block;}
+  .bell-panel h3{font-size:14px; margin-bottom:10px;}
+  .bell-item{font-size:13px; padding:9px 0; border-top:1px solid var(--line); color:var(--ink-soft); line-height:1.5;}
+  .bell-item:first-of-type{border-top:none;}
+  .bell-item b{color:var(--ink); font-weight:600;}
+
+  .view{display:none;}
+  .view.active{display:block;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:10px;}
+  .section-head h2{font-size:21px;}
+  .section-sub{color:var(--ink-soft); font-size:13.5px; margin-bottom:22px;}
+
+  /* ===== TODO VIEW ===== */
+  .todo-add{
+    display:flex; gap:10px; background:var(--card); border:1.5px solid var(--line); border-radius:10px;
+    padding:9px 9px 9px 16px; margin-bottom:26px; align-items:center; max-width:640px;
+  }
+  .todo-add input[type=text]{flex:1; border:none; outline:none; background:none; font-size:14.5px; padding:6px 0;}
+  .todo-add select{border:1.5px solid var(--line); border-radius:7px; background:#fff; font-size:12.5px; padding:6px 8px; color:var(--ink-soft);}
+  .todo-add button{background:var(--amber); border:none; color:#fff; font-weight:700; font-size:13.5px; padding:9px 16px; border-radius:7px;}
+  .todo-add button:hover{background:var(--amber-deep);}
+
+  .todo-cols{display:grid; grid-template-columns:1fr 1fr; gap:28px; max-width:920px;}
+  .col-title{font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+  .col-title .count{background:var(--paper-deep); border-radius:20px; padding:1px 9px; font-size:11.5px;}
+  .todo-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px;}
+  .todo-item{
+    background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 12px;
+    display:flex; align-items:flex-start; gap:11px;
+  }
+  .todo-check{
+    width:19px;height:19px; border-radius:5px; border:2px solid var(--ink-faint); flex:none; margin-top:2px;
+    display:flex;align-items:center;justify-content:center; background:#fff;
+  }
+  .todo-check.checked{background:var(--amber); border-color:var(--amber);}
+  .todo-check svg{width:12px;height:12px; display:none;}
+  .todo-check.checked svg{display:block;}
+  .todo-body{flex:1; min-width:0;}
+  .todo-title{font-size:14px; font-weight:600; line-height:1.4; word-break:break-word;}
+  .todo-item.done .todo-title{text-decoration:line-through; color:var(--ink-faint); font-weight:500;}
+  .todo-meta{display:flex; gap:8px; margin-top:6px; align-items:center;}
+  .tag{font-size:11px; padding:2px 8px; border-radius:20px; font-weight:600;}
+  .tag.hoctap{background:#E9E3F5; color:#5B4C9E;}
+  .tag.canhan{background:#DCEBE4; color:var(--sage-deep);}
+  .tag.vat{background:#FBE7D6; color:var(--amber-deep);}
+  .tag.datechip{background:#EDE7F5; color:var(--violet-deep);}
+  .todo-del{background:none; border:none; color:var(--ink-faint); padding:2px; flex:none;}
+  .todo-del:hover{color:var(--coral);}
+  .empty-note{color:var(--ink-faint); font-size:13px; padding:14px 0; font-style:italic;}
+
+  /* ===== HABIT VIEW ===== */
+  .habit-summary{
+    background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px 22px; margin-bottom:26px;
+    max-width:760px; display:flex; gap:36px; flex-wrap:wrap; align-items:flex-end;
+  }
+  .chart-bars{display:flex; align-items:flex-end; gap:12px; height:86px;}
+  .bar-col{display:flex; flex-direction:column; align-items:center; gap:7px; width:26px;}
+  .bar{width:100%; background:var(--sage); border-radius:4px 4px 2px 2px; transition:height .3s;}
+  .bar-lbl{font-size:10.5px; color:var(--ink-faint); font-weight:600;}
+  .summary-stat{}
+  .summary-stat .num{font-family:'Fraunces',serif; font-size:32px; font-weight:700; color:var(--sage-deep);}
+  .summary-stat .lbl{font-size:12.5px; color:var(--ink-soft);}
+
+  .habit-list{display:flex; flex-direction:column; gap:14px; max-width:760px;}
+  .habit-card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px;}
+  .habit-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+  .habit-name{display:flex; align-items:center; gap:10px; font-size:14.5px; font-weight:700;}
+  .habit-emoji{font-size:18px;}
+  .streak{font-size:12.5px; color:var(--amber-deep); font-weight:700; background:#FBF0DD; padding:3px 10px; border-radius:20px;}
+  .habit-grid{display:grid; grid-template-columns:repeat(35,1fr); gap:3px;}
+  .hcell{aspect-ratio:1; border-radius:3px; background:var(--line); cursor:default;}
+  .hcell.on{background:var(--sage);}
+  .hcell.today{cursor:pointer; outline:2px solid var(--ink); outline-offset:1px;}
+  .habit-add{
+    display:flex; gap:10px; margin-top:16px; max-width:520px;
+  }
+  .habit-add input{flex:1; border:1.5px solid var(--line); border-radius:8px; padding:10px 13px; font-size:13.5px; background:var(--card);}
+  .habit-add button{background:var(--sage); color:#fff; border:none; padding:10px 16px; border-radius:8px; font-weight:700; font-size:13px;}
+  .habit-add button:hover{background:var(--sage-deep);}
+
+  /* ===== NOTES VIEW ===== */
+  .notes-toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; max-width:920px;}
+  .btn-add-note{background:var(--coral); color:#fff; border:none; padding:10px 18px; border-radius:8px; font-weight:700; font-size:13.5px;}
+  .btn-add-note:hover{background:var(--coral-deep);}
+  .note-form{
+    display:none; background:var(--card); border:1.5px dashed var(--coral); border-radius:10px; padding:18px; margin-bottom:22px; max-width:520px;
+  }
+  .note-form.open{display:block;}
+  .note-form .field input, .note-form .field textarea{width:100%; border:1.5px solid var(--line); border-radius:7px; padding:9px 11px; font-size:13.5px; background:#fff;}
+  .note-form .field textarea{resize:vertical; min-height:64px;}
+  .note-form-row{display:flex; gap:10px; align-items:flex-end;}
+  .note-form-row .field{flex:1;}
+  .note-colors{display:flex; gap:8px; margin:4px 0 14px;}
+  .color-dot{width:22px;height:22px;border-radius:50%; border:2px solid transparent; cursor:pointer;}
+  .color-dot.selected{border-color:var(--ink);}
+  .note-form .btn-primary{background:var(--coral); width:auto; padding:9px 18px;}
+  .note-form .btn-primary:hover{background:var(--coral-deep);}
+  .note-form .btn-cancel{background:none;border:none;color:var(--ink-soft); font-size:13px; margin-left:10px;}
+
+  .notes-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:22px; max-width:960px;}
+  .note-card{
+    padding:18px 16px 16px; border-radius:3px; position:relative; min-height:140px;
+    box-shadow:0 6px 14px rgba(35,42,61,.09);
+  }
+  .note-card:nth-child(3n+1){transform:rotate(-1.1deg);}
+  .note-card:nth-child(3n+2){transform:rotate(0.8deg);}
+  .note-card:nth-child(3n+3){transform:rotate(-0.4deg);}
+  .note-tape{
+    position:absolute; top:-9px; left:50%; transform:translateX(-50%) rotate(-2deg);
+    width:64px; height:20px; background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.7);
+  }
+  .note-card h3{font-size:14.5px; margin-bottom:8px; line-height:1.35; padding-right:20px;}
+  .note-card p{font-size:12.5px; line-height:1.55; color:#3a4258; margin:0;}
+  .note-del{position:absolute; top:12px; right:10px; background:none; border:none; color:rgba(35,42,61,.4); padding:0;}
+  .note-del:hover{color:var(--coral-deep);}
+  .note-reminder{
+    display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; margin-top:12px;
+    background:rgba(255,255,255,.55); padding:3px 9px; border-radius:20px; color:#5c3d1f;
+  }
+  .note-c1{background:#FDE9C8;} .note-c2{background:#DCEBDA;} .note-c3{background:#F6D9DD;} .note-c4{background:#DCE3F0;}
+
+  /* ===== CALENDAR VIEW ===== */
+  .cal-layout{display:flex; gap:24px; align-items:flex-start; max-width:1000px; flex-wrap:wrap;}
+  .cal-card{flex:1; min-width:360px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+  .cal-nav{display:flex; align-items:center; gap:10px; margin-bottom:16px;}
+  .cal-month-label{font-family:'Fraunces',serif; font-weight:700; font-size:18px; flex:1; text-transform:capitalize;}
+  .cal-nav-btn{width:30px;height:30px;border-radius:50%; border:1.5px solid var(--line); background:#fff; font-size:16px; color:var(--ink-soft); line-height:1; flex:none;}
+  .cal-nav-btn:hover{border-color:var(--violet); color:var(--violet);}
+  .cal-today-btn{border:1.5px solid var(--violet); color:var(--violet-deep); background:none; font-size:12px; font-weight:700; padding:6px 12px; border-radius:20px; flex:none;}
+  .cal-weekdays{display:grid; grid-template-columns:repeat(7,1fr); font-size:11.5px; color:var(--ink-faint); font-weight:700; text-align:center; margin-bottom:6px;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px;}
+  .cal-cell{
+    aspect-ratio:1; border-radius:7px; border:1.5px solid transparent; background:var(--paper);
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:6px 4px 4px;
+    cursor:pointer; position:relative;
+  }
+  .cal-cell.outside{opacity:0.3; cursor:default;}
+  .cal-cell:hover:not(.outside){border-color:var(--violet);}
+  .cal-cell.today{background:#EDE7F5;}
+  .cal-cell.selected{border-color:var(--violet); background:#fff; box-shadow:0 0 0 2px rgba(122,106,158,.18);}
+  .cal-daynum{font-size:12.5px; font-weight:700;}
+  .cal-dots{display:flex; gap:3px; margin-top:5px;}
+  .cal-dot{width:5px;height:5px;border-radius:50%; background:var(--violet);}
+  .cal-more{font-size:9px; color:var(--violet-deep); margin-top:2px; font-weight:700;}
+
+  .cal-day-panel{width:300px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px; flex:none;}
+  .cal-day-title{font-family:'Fraunces',serif; font-weight:700; font-size:16px; margin-bottom:2px;}
+  .cal-day-sub{font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
+  .cal-task-list{list-style:none; padding:0; margin:0 0 16px; display:flex; flex-direction:column; gap:8px;}
+  .cal-task{display:flex; gap:9px; align-items:flex-start; background:var(--paper); border:1px solid var(--line); border-radius:7px; padding:9px 10px;}
+  .cal-task-title{font-size:13px; line-height:1.4;}
+  .cal-task.done .cal-task-title{text-decoration:line-through; color:var(--ink-faint);}
+  .cal-task-time{font-size:11px; font-weight:700; color:var(--violet-deep); margin-top:2px;}
+  .cal-add-form{border-top:1px dashed var(--line); padding-top:14px;}
+  .cal-add-form input, .cal-add-form select{width:100%; border:1.5px solid var(--line); border-radius:7px; padding:8px 10px; font-size:13px; margin-bottom:8px; background:#fff; outline:none;}
+  .cal-add-form input:focus, .cal-add-form select:focus{border-color:var(--violet);}
+  .cal-add-row{display:flex; gap:8px;}
+  .cal-add-row > *{flex:1;}
+  .cal-add-form button{width:100%; background:var(--violet); color:#fff; border:none; padding:9px; border-radius:7px; font-weight:700; font-size:13px;}
+  .cal-add-form button:hover{background:var(--violet-deep);}
+  .cal-empty{font-size:12.5px; color:var(--ink-faint); font-style:italic; padding:2px 0 14px;}
+
+  /* responsive */
+  @media (max-width:900px){
+    .todo-cols{grid-template-columns:1fr;}
+    .auth-cover{display:none;}
+    #screen-auth{grid-template-columns:1fr;}
+    .cal-day-panel{width:100%;}
+    .cal-card{min-width:0;}
+  }
+  @media (max-width:680px){
+    #app.on{grid-template-columns:1fr;}
+    .spine{
+      position:fixed; bottom:0; left:0; right:0; width:100%; flex-direction:row;
+      padding:8px 14px; z-index:20; justify-content:space-between;
+    }
+    .spine::before{display:none;}
+    .spine-logo{display:none;}
+    .spine-nav{flex-direction:row; justify-content:space-around;}
+    .tab-btn.active::after{right:auto; left:50%; top:auto; bottom:0; transform:translateX(-50%); width:22px; height:4px; border-radius:3px 3px 0 0;}
+    .spine-user{flex-direction:row;}
+    .main{padding:24px 18px 90px;}
+    .habit-grid{grid-template-columns:repeat(15,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div id="screen-auth">
+  <div class="auth-cover">
+    <div class="auth-brand">
+      <div class="display">Sổ<span>Tay</span></div>
+    </div>
+    <div class="auth-illustration">
+      <svg width="200" height="140" viewBox="0 0 200 140" fill="none">
+        <rect x="18" y="14" width="132" height="104" rx="4" fill="#2E3650" stroke="#8A90A0" stroke-width="1.5"/>
+        <line x1="18" y1="14" x2="18" y2="118" stroke="#DD9F35" stroke-width="4"/>
+        <line x1="40" y1="34" x2="132" y2="34" stroke="#5B6478" stroke-width="1.5"/>
+        <line x1="40" y1="52" x2="118" y2="52" stroke="#5B6478" stroke-width="1.5"/>
+        <line x1="40" y1="70" x2="128" y2="70" stroke="#5B6478" stroke-width="1.5"/>
+        <circle cx="46" cy="88" r="5" fill="none" stroke="#6E8A5E" stroke-width="2"/>
+        <path d="M43.5 88l2 2.4 4-4.8" stroke="#6E8A5E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="60" y1="88" x2="118" y2="88" stroke="#5B6478" stroke-width="1.5"/>
+        <circle cx="46" cy="102" r="5" fill="#C85C6B"/>
+        <line x1="60" y1="102" x2="104" y2="102" stroke="#5B6478" stroke-width="1.5"/>
+        <path d="M150 96l36 30" stroke="#DD9F35" stroke-width="4" stroke-linecap="round"/>
+        <path d="M182 122l7 8-11-1z" fill="#DD9F35"/>
+      </svg>
+    </div>
+    <div class="auth-quote">
+      <p class="display">Việc cần làm, thói quen và ghi chú — gói gọn trong một cuốn sổ.</p>
+      <p>Không cần mở ba app khác nhau. Sổ Tay theo dõi lịch học, thói quen và những điều cần nhớ, riêng tư cho từng tài khoản.</p>
+    </div>
+    <div class="feature-pills">
+      <span class="pill a">✓ Việc cần làm</span>
+      <span class="pill v">▦ Lịch</span>
+      <span class="pill s">◐ Thói quen</span>
+      <span class="pill c">✎ Ghi chú &amp; nhắc nhở</span>
+    </div>
+  </div>
+
+  <div class="auth-formside">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuth('login')">Đăng nhập</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuth('register')">Đăng ký</button>
+      </div>
+
+      <form id="formLogin" onsubmit="return doLogin(event)">
+        <div class="field">
+          <label>Email hoặc số điện thoại</label>
+          <input type="text" placeholder="ban@email.com" value="linh.tran@fpt.edu.vn" required>
+        </div>
+        <div class="field">
+          <label>Mật khẩu</label>
+          <input type="password" placeholder="••••••••" value="123456" required>
+        </div>
+        <button class="btn-primary" type="submit">Vào sổ của tôi</button>
+      </form>
+
+      <form id="formRegister" style="display:none" onsubmit="return doLogin(event)">
+        <div class="field"><label>Họ và tên</label><input type="text" placeholder="Nguyễn Thị Linh" required></div>
+        <div class="field"><label>Email</label><input type="email" placeholder="ban@email.com" required></div>
+        <div class="field"><label>Mật khẩu</label><input type="password" placeholder="Tối thiểu 6 ký tự" required></div>
+        <button class="btn-primary" type="submit">Tạo sổ tay của tôi</button>
+      </form>
+
+      <p class="auth-foot" id="authFootText">
+        Chưa có sổ? <button onclick="switchAuth('register')">Đăng ký miễn phí</button>
+      </p>
+      <p class="auth-hint">Mỗi tài khoản chỉ nhìn thấy việc cần làm, thói quen và ghi chú của chính mình — không ai khác truy cập được.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app">
+  <nav class="spine">
+    <div class="spine-logo">S</div>
+    <div class="spine-nav">
+      <button class="tab-btn active" data-view="todo" onclick="switchView('todo')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        Việc làm
+      </button>
+      <button class="tab-btn" data-view="calendar" onclick="switchView('calendar')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        Lịch
+      </button>
+      <button class="tab-btn" data-view="habit" onclick="switchView('habit')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        Thói quen
+      </button>
+      <button class="tab-btn" data-view="notes" onclick="switchView('notes')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v13l-4 4H5z"/><path d="M15 17v4l4-4z"/></svg>
+        Ghi chú
+      </button>
+    </div>
+    <div class="spine-user">
+      <div class="avatar">L</div>
+      <button class="logout-btn" onclick="doLogout()">Đăng xuất</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="greet">
+        <h1 class="display" id="greetText">Chào buổi sáng, Linh 👋</h1>
+        <div class="date" id="dateText"></div>
+      </div>
+      <div class="topbar-right">
+        <div class="bell-wrap">
+          <button class="icon-btn" onclick="toggleBell()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#232A3D" stroke-width="2"><path d="M6 8a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 21a2 2 0 004 0"/></svg>
+            <span class="dot-badge"></span>
+          </button>
+          <div class="bell-panel" id="bellPanel">
+            <h3>Nhắc nhở sắp tới</h3>
+            <div class="bell-item"><b>Nộp báo cáo Marketing</b><br>Ngày mai · 20:00</div>
+            <div class="bell-item"><b>Đóng học phí kỳ này</b><br>Thứ 6 · 08:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== VIEW: TODO ===== -->
+    <section class="view active" id="view-todo">
+      <div class="section-head"><h2>Việc cần làm</h2></div>
+      <div class="section-sub">Thêm việc, đánh dấu khi xong, xoá khi không cần nữa.</div>
+
+      <div class="todo-add">
+        <input type="text" id="todoInput" placeholder="Thêm việc mới, ví dụ: Làm bài tập Giải tích…">
+        <select id="todoTag">
+          <option value="hoctap">Học tập</option>
+          <option value="canhan">Cá nhân</option>
+          <option value="vat">Việc vặt</option>
+        </select>
+        <button onclick="addTodo()">Thêm</button>
+      </div>
+
+      <div class="todo-cols">
+        <div>
+          <div class="col-title">Đang chờ <span class="count" id="countPending">0</span></div>
+          <ul class="todo-list" id="listPending"></ul>
+        </div>
+        <div>
+          <div class="col-title">Đã xong <span class="count" id="countDone">0</span></div>
+          <ul class="todo-list" id="listDone"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== VIEW: CALENDAR ===== -->
+    <section class="view" id="view-calendar">
+      <div class="section-head"><h2>Lịch</h2></div>
+      <div class="section-sub">Đặt việc cần làm vào một ngày và giờ cụ thể. Bấm vào một ngày để chỉ xem việc của riêng ngày đó.</div>
+
+      <div class="cal-layout">
+        <div class="cal-card">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="monthShift(-1)">‹</button>
+            <div class="cal-month-label" id="calMonthLabel"></div>
+            <button class="cal-nav-btn" onclick="monthShift(1)">›</button>
+            <button class="cal-today-btn" onclick="goToday()">Hôm nay</button>
+          </div>
+          <div class="cal-weekdays">
+            <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <div class="cal-day-panel" id="calDayPanel"></div>
+      </div>
+    </section>
+
+    <!-- ===== VIEW: HABIT ===== -->
+    <section class="view" id="view-habit">
+      <div class="section-head"><h2>Theo dõi thói quen</h2></div>
+      <div class="section-sub">Đánh dấu mỗi ngày làm được. Duy trì liên tục để giữ chuỗi ngày (streak).</div>
+
+      <div class="habit-summary">
+        <div class="summary-stat">
+          <div class="num" id="weekPercent">0%</div>
+          <div class="lbl">tỉ lệ hoàn thành tuần này</div>
+        </div>
+        <div class="chart-bars" id="weekChart"></div>
+      </div>
+
+      <div class="habit-list" id="habitList"></div>
+
+      <div class="habit-add">
+        <input type="text" id="habitInput" placeholder="Thêm thói quen mới, ví dụ: Học từ vựng tiếng Anh">
+        <button onclick="addHabit()">Thêm thói quen</button>
+      </div>
+    </section>
+
+    <!-- ===== VIEW: NOTES ===== -->
+    <section class="view" id="view-notes">
+      <div class="section-head"><h2>Ghi chú &amp; nhắc nhở</h2></div>
+      <div class="section-sub">Lưu lại thông tin cần nhớ, đặt nhắc nhở nếu có thời hạn.</div>
+
+      <div class="notes-toolbar">
+        <div></div>
+        <button class="btn-add-note" onclick="toggleNoteForm()">+ Ghi chú mới</button>
+      </div>
+
+      <div class="note-form" id="noteForm">
+        <div class="field"><label>Tiêu đề</label><input type="text" id="noteTitle" placeholder="Ví dụ: Deadline đồ án"></div>
+        <div class="field"><label>Nội dung</label><textarea id="noteBody" placeholder="Ghi nội dung cần nhớ…"></textarea></div>
+        <div class="note-form-row">
+          <div class="field"><label>Nhắc lúc (không bắt buộc)</label><input type="datetime-local" id="noteReminder"></div>
+        </div>
+        <label style="font-size:13px;color:var(--ink-soft);font-weight:600;">Màu ghi chú</label>
+        <div class="note-colors">
+          <div class="color-dot selected" style="background:#FDE9C8" onclick="pickColor(this,'note-c1')"></div>
+          <div class="color-dot" style="background:#DCEBDA" onclick="pickColor(this,'note-c2')"></div>
+          <div class="color-dot" style="background:#F6D9DD" onclick="pickColor(this,'note-c3')"></div>
+          <div class="color-dot" style="background:#DCE3F0" onclick="pickColor(this,'note-c4')"></div>
+        </div>
+        <div>
+          <button type="button" class="btn-primary" style="display:inline-block;width:auto;" onclick="addNote()">Lưu ghi chú</button>
+          <button type="button" class="btn-cancel" onclick="toggleNoteForm()">Huỷ</button>
+        </div>
+      </div>
+
+      <div class="notes-grid" id="notesGrid"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ---------- AUTH ---------- */
+function switchAuth(mode){
+  document.getElementById('tabLogin').classList.toggle('active', mode==='login');
+  document.getElementById('tabRegister').classList.toggle('active', mode==='register');
+  document.getElementById('formLogin').style.display = mode==='login' ? 'block':'none';
+  document.getElementById('formRegister').style.display = mode==='register' ? 'block':'none';
+  document.getElementById('authFootText').innerHTML = mode==='login'
+    ? 'Chưa có sổ? <button onclick="switchAuth(\'register\')">Đăng ký miễn phí</button>'
+    : 'Đã có sổ rồi? <button onclick="switchAuth(\'login\')">Đăng nhập</button>';
+}
+function doLogin(e){
+  e.preventDefault();
+  document.getElementById('screen-auth').style.display = 'none';
+  document.getElementById('app').classList.add('on');
+  renderTodos(); renderHabits(); renderNotes(); renderCalendar();
+  return false;
+}
+function doLogout(){
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('screen-auth').style.display = 'grid';
+}
+
+/* ---------- NAV ---------- */
+function switchView(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id==='view-'+name));
+}
+function toggleBell(){ document.getElementById('bellPanel').classList.toggle('open'); }
+document.addEventListener('click', function(e){
+  const w = document.querySelector('.bell-wrap');
+  if(w && !w.contains(e.target)) document.getElementById('bellPanel').classList.remove('open');
+});
+
+const now = new Date();
+document.getElementById('dateText').textContent = now.toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'long'});
+
+/* ---------- DATE HELPERS (dùng chung cho Việc cần làm & Lịch) ---------- */
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function formatDateKey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function addDaysKey(base, n){ const d = new Date(base); d.setDate(d.getDate()+n); return formatDateKey(d); }
+const todayDate = new Date();
+const todayKey = formatDateKey(todayDate);
+function formatDateChip(dateKey, time){
+  const d = new Date(dateKey+'T00:00:00');
+  let s = d.getDate()+'/'+(d.getMonth()+1);
+  if(time) s += ' · '+time;
+  return s;
+}
+
+/* ---------- TODO ---------- */
+let todos = [
+  {id:1, title:'Làm bài tập Giải tích 2', tag:'hoctap', done:false, date: todayKey, time:'14:00'},
+  {id:2, title:'Ôn thi giữa kỳ Kinh tế vi mô', tag:'hoctap', done:false, date: addDaysKey(todayDate,3), time:'09:00'},
+  {id:3, title:'Đi siêu thị mua đồ nấu ăn', tag:'vat', done:false, date: todayKey, time:null},
+  {id:4, title:'Gọi điện hỏi thăm bố mẹ', tag:'canhan', done:true, date: addDaysKey(todayDate,-1), time:null},
+  {id:5, title:'Nộp đồ án môn Cơ sở dữ liệu', tag:'hoctap', done:false, date: addDaysKey(todayDate,7), time:'23:59'},
+];
+let todoSeq = 6;
+const tagLabel = {hoctap:'Học tập', canhan:'Cá nhân', vat:'Việc vặt'};
+
+function addTodo(){
+  const input = document.getElementById('todoInput');
+  const tag = document.getElementById('todoTag').value;
+  const title = input.value.trim();
+  if(!title) return;
+  todos.unshift({id:todoSeq++, title, tag, done:false, date:null, time:null});
+  input.value='';
+  renderTodos();
+  renderCalendar();
+}
+document.getElementById('todoInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
+
+function toggleTodo(id){
+  const t = todos.find(x=>x.id===id); t.done = !t.done; renderTodos(); renderCalendar();
+}
+function deleteTodo(id){
+  todos = todos.filter(x=>x.id!==id); renderTodos(); renderCalendar();
+}
+function renderTodos(){
+  const pending = todos.filter(t=>!t.done);
+  const done = todos.filter(t=>t.done);
+  document.getElementById('countPending').textContent = pending.length;
+  document.getElementById('countDone').textContent = done.length;
+
+  const mk = (t)=>`
+    <li class="todo-item ${t.done?'done':''}">
+      <button class="todo-check ${t.done?'checked':''}" onclick="toggleTodo(${t.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+      </button>
+      <div class="todo-body">
+        <div class="todo-title">${t.title}</div>
+        <div class="todo-meta">
+          <span class="tag ${t.tag}">${tagLabel[t.tag]}</span>
+          ${t.date ? `<span class="tag datechip">📅 ${formatDateChip(t.date, t.time)}</span>` : ''}
+        </div>
+      </div>
+      <button class="todo-del" onclick="deleteTodo(${t.id})" title="Xoá">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+      </button>
+    </li>`;
+
+  document.getElementById('listPending').innerHTML = pending.length ? pending.map(mk).join('') : '<div class="empty-note">Không còn việc nào đang chờ — thêm việc mới ở trên.</div>';
+  document.getElementById('listDone').innerHTML = done.length ? done.map(mk).join('') : '<div class="empty-note">Chưa có việc nào hoàn thành hôm nay.</div>';
+}
+
+/* ---------- CALENDAR ---------- */
+let calCursor = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+let selectedDateKey = todayKey;
+
+const monthNames = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+const weekdayNamesFull = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+
+function monthShift(n){
+  calCursor = new Date(calCursor.getFullYear(), calCursor.getMonth()+n, 1);
+  renderCalendar();
+}
+function goToday(){
+  calCursor = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+  selectedDateKey = todayKey;
+  renderCalendar();
+}
+function selectDay(key){
+  if(!key) return;
+  selectedDateKey = key;
+  renderCalendar();
+}
+function tasksForDate(key){
+  return todos.filter(t=>t.date===key).sort((a,b)=>(a.time||'99:99').localeCompare(b.time||'99:99'));
+}
+function renderCalendar(){
+  const label = document.getElementById('calMonthLabel');
+  if(!label) return; // view chưa render (an toàn khi gọi sớm)
+  label.textContent = monthNames[calCursor.getMonth()] + ', ' + calCursor.getFullYear();
+
+  const year = calCursor.getFullYear(), month = calCursor.getMonth();
+  const firstDow = (new Date(year, month, 1).getDay() + 6) % 7; // 0 = Thứ 2
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  let cells = [];
+  for(let i=firstDow-1; i>=0; i--) cells.push({day: daysInPrevMonth-i, outside:true, key:null});
+  for(let d=1; d<=daysInMonth; d++) cells.push({day:d, outside:false, key: year+'-'+pad(month+1)+'-'+pad(d)});
+  while(cells.length % 7 !== 0) cells.push({day: cells.length - (firstDow+daysInMonth) + 1, outside:true, key:null});
+
+  document.getElementById('calGrid').innerHTML = cells.map(c=>{
+    if(c.outside) return `<div class="cal-cell outside"><div class="cal-daynum">${c.day}</div></div>`;
+    const dayTasks = tasksForDate(c.key);
+    const isToday = c.key === todayKey;
+    const isSelected = c.key === selectedDateKey;
+    const dots = dayTasks.slice(0,3).map(()=>'<span class="cal-dot"></span>').join('');
+    const more = dayTasks.length>3 ? `<div class="cal-more">+${dayTasks.length-3}</div>` : '';
+    return `<div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''}" onclick="selectDay('${c.key}')">
+      <div class="cal-daynum">${c.day}</div>
+      ${dayTasks.length ? `<div class="cal-dots">${dots}</div>${more}` : ''}
+    </div>`;
+  }).join('');
+
+  renderDayPanel();
+}
+function toggleCalTask(id){ const t = todos.find(x=>x.id===id); t.done = !t.done; renderTodos(); renderDayPanel(); renderCalendar(); }
+function deleteCalTask(id){ todos = todos.filter(x=>x.id!==id); renderTodos(); renderCalendar(); }
+
+function renderDayPanel(){
+  const panel = document.getElementById('calDayPanel');
+  if(!panel) return;
+  const d = new Date(selectedDateKey+'T00:00:00');
+  const label = weekdayNamesFull[d.getDay()] + ', ' + d.getDate() + ' ' + monthNames[d.getMonth()].toLowerCase();
+  const tasks = tasksForDate(selectedDateKey);
+
+  const list = tasks.length ? `<ul class="cal-task-list">${tasks.map(t=>`
+    <li class="cal-task ${t.done?'done':''}">
+      <button class="todo-check ${t.done?'checked':''}" style="width:17px;height:17px;margin-top:1px;" onclick="toggleCalTask(${t.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+      </button>
+      <div style="flex:1;">
+        <div class="cal-task-title">${t.title}</div>
+        <div class="cal-task-time">${t.time ? t.time : 'Cả ngày'}</div>
+      </div>
+      <button class="todo-del" onclick="deleteCalTask(${t.id})" title="Xoá">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+      </button>
+    </li>`).join('')}</ul>` : `<div class="cal-empty">Chưa có việc nào cho ngày này.</div>`;
+
+  panel.innerHTML = `
+    <div class="cal-day-title">${label.charAt(0).toUpperCase()+label.slice(1)}</div>
+    <div class="cal-day-sub">${tasks.length} việc trong ngày</div>
+    ${list}
+    <div class="cal-add-form">
+      <input type="text" id="calNewTitle" placeholder="Thêm việc cho ngày này…">
+      <div class="cal-add-row">
+        <input type="time" id="calNewTime">
+        <select id="calNewTag">
+          <option value="hoctap">Học tập</option>
+          <option value="canhan">Cá nhân</option>
+          <option value="vat">Việc vặt</option>
+        </select>
+      </div>
+      <button onclick="addCalTask()">Thêm vào ngày ${d.getDate()}/${d.getMonth()+1}</button>
+    </div>`;
+}
+function addCalTask(){
+  const titleEl = document.getElementById('calNewTitle');
+  const title = titleEl.value.trim();
+  if(!title) return;
+  const time = document.getElementById('calNewTime').value || null;
+  const tag = document.getElementById('calNewTag').value;
+  todos.unshift({id: todoSeq++, title, tag, done:false, date: selectedDateKey, time});
+  renderTodos();
+  renderCalendar();
+}
+
+/* ---------- HABITS ---------- */
+function seedDays(fillRate, trailingOn){
+  const arr = [];
+  for(let i=0;i<35;i++) arr.push(Math.random() < fillRate);
+  for(let i=0;i<trailingOn;i++) arr[34-i] = true;
+  return arr;
+}
+let habits = [
+  {id:1, emoji:'📖', name:'Đọc sách 30 phút', days: seedDays(0.5, 4)},
+  {id:2, emoji:'💧', name:'Uống đủ 2 lít nước', days: seedDays(0.6, 6)},
+  {id:3, emoji:'🏃', name:'Tập thể dục', days: seedDays(0.35, 2)},
+  {id:4, emoji:'😴', name:'Ngủ trước 23h', days: seedDays(0.45, 1)},
+];
+let habitSeq = 5;
+
+function currentStreak(days){
+  let s=0;
+  for(let i=days.length-1;i>=0;i--){ if(days[i]) s++; else break; }
+  return s;
+}
+function toggleHabitToday(hid){
+  const h = habits.find(x=>x.id===hid);
+  h.days[34] = !h.days[34];
+  renderHabits();
+}
+function addHabit(){
+  const input = document.getElementById('habitInput');
+  const name = input.value.trim();
+  if(!name) return;
+  habits.push({id:habitSeq++, emoji:'✏️', name, days: new Array(35).fill(false)});
+  input.value='';
+  renderHabits();
+}
+document.getElementById('habitInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addHabit(); });
+
+function renderHabits(){
+  document.getElementById('habitList').innerHTML = habits.map(h=>{
+    const cells = h.days.map((on,i)=>{
+      const isToday = i===34;
+      return `<div class="hcell ${on?'on':''} ${isToday?'today':''}" ${isToday?`onclick="toggleHabitToday(${h.id})"`:''} title="${on?'Đã làm':'Chưa làm'}"></div>`;
+    }).join('');
+    return `<div class="habit-card">
+      <div class="habit-top">
+        <div class="habit-name"><span class="habit-emoji">${h.emoji}</span>${h.name}</div>
+        <div class="streak">🔥 ${currentStreak(h.days)} ngày liên tiếp</div>
+      </div>
+      <div class="habit-grid">${cells}</div>
+    </div>`;
+  }).join('');
+
+  // weekly summary (last 7 of the 35 days) across all habits
+  const dayLabels = ['T2','T3','T4','T5','T6','T7','CN'];
+  const last7 = [];
+  for(let i=28;i<35;i++){
+    let done=0;
+    habits.forEach(h=>{ if(h.days[i]) done++; });
+    last7.push(habits.length ? done/habits.length : 0);
+  }
+  const avg = last7.reduce((a,b)=>a+b,0)/ (last7.length||1);
+  document.getElementById('weekPercent').textContent = Math.round(avg*100)+'%';
+  document.getElementById('weekChart').innerHTML = last7.map((p,i)=>`
+    <div class="bar-col">
+      <div class="bar" style="height:${Math.max(6,p*86)}px"></div>
+      <div class="bar-lbl">${dayLabels[i]}</div>
+    </div>`).join('');
+}
+
+/* ---------- NOTES ---------- */
+let notes = [
+  {id:1, title:'Nộp báo cáo Marketing', body:'Hoàn thiện phần phân tích đối thủ trước khi nộp cho nhóm trưởng.', color:'note-c1', reminder:'Ngày mai · 20:00'},
+  {id:2, title:'Số phòng trọ mới', body:'Địa chỉ: 12/4 Nguyễn Trãi, phường Thanh Xuân. Chủ nhà: cô Hạnh.', color:'note-c2', reminder:null},
+  {id:3, title:'Ý tưởng đồ án tốt nghiệp', body:'App quản lý chi tiêu cho sinh viên, tích hợp nhắc thanh toán học phí.', color:'note-c4', reminder:null},
+  {id:4, title:'Đóng học phí kỳ này', body:'Chuyển khoản qua cổng thanh toán của trường trước hạn.', color:'note-c3', reminder:'Thứ 6 · 08:00'},
+];
+let noteSeq = 5;
+let selectedColor = 'note-c1';
+
+function toggleNoteForm(){
+  document.getElementById('noteForm').classList.toggle('open');
+}
+function pickColor(el, cls){
+  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedColor = cls;
+}
+function addNote(){
+  const title = document.getElementById('noteTitle').value.trim();
+  const body = document.getElementById('noteBody').value.trim();
+  const rem = document.getElementById('noteReminder').value;
+  if(!title) return;
+  let reminderText = null;
+  if(rem){
+    const d = new Date(rem);
+    reminderText = d.toLocaleDateString('vi-VN',{day:'numeric',month:'numeric'}) + ' · ' + d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  }
+  notes.unshift({id:noteSeq++, title, body, color:selectedColor, reminder:reminderText});
+  document.getElementById('noteTitle').value='';
+  document.getElementById('noteBody').value='';
+  document.getElementById('noteReminder').value='';
+  toggleNoteForm();
+  renderNotes();
+}
+function deleteNote(id){
+  notes = notes.filter(n=>n.id!==id); renderNotes();
+}
+function renderNotes(){
+  document.getElementById('notesGrid').innerHTML = notes.map(n=>`
+    <div class="note-card ${n.color}">
+      <div class="note-tape"></div>
+      <button class="note-del" onclick="deleteNote(${n.id})">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h3>${n.title}</h3>
+      <p>${n.body}</p>
+      ${n.reminder ? `<div class="note-reminder">🔔 ${n.reminder}</div>` : ''}
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
