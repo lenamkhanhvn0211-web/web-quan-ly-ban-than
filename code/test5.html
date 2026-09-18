@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sổ Tay — sổ tay điện tử cho đời sinh viên</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="test5.css" />
+  </head>
+  <body>
+    <div id="screen-auth">
+      <div class="auth-cover">
+        <div class="auth-brand">
+          <div class="display">Sổ<span>Tay</span></div>
+        </div>
+        <div class="auth-illustration">
+          <svg width="200" height="140" viewBox="0 0 200 140" fill="none">
+            <rect
+              x="18"
+              y="14"
+              width="132"
+              height="104"
+              rx="4"
+              fill="#2E3650"
+              stroke="#8A90A0"
+              stroke-width="1.5"
+            />
+            <line
+              x1="18"
+              y1="14"
+              x2="18"
+              y2="118"
+              stroke="#DD9F35"
+              stroke-width="4"
+            />
+            <line
+              x1="40"
+              y1="34"
+              x2="132"
+              y2="34"
+              stroke="#5B6478"
+              stroke-width="1.5"
+            />
+            <line
+              x1="40"
+              y1="52"
+              x2="118"
+              y2="52"
+              stroke="#5B6478"
+              stroke-width="1.5"
+            />
+            <line
+              x1="40"
+              y1="70"
+              x2="128"
+              y2="70"
+              stroke="#5B6478"
+              stroke-width="1.5"
+            />
+            <circle
+              cx="46"
+              cy="88"
+              r="5"
+              fill="none"
+              stroke="#6E8A5E"
+              stroke-width="2"
+            />
+            <path
+              d="M43.5 88l2 2.4 4-4.8"
+              stroke="#6E8A5E"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line
+              x1="60"
+              y1="88"
+              x2="118"
+              y2="88"
+              stroke="#5B6478"
+              stroke-width="1.5"
+            />
+            <circle cx="46" cy="102" r="5" fill="#C85C6B" />
+            <line
+              x1="60"
+              y1="102"
+              x2="104"
+              y2="102"
+              stroke="#5B6478"
+              stroke-width="1.5"
+            />
+            <path
+              d="M150 96l36 30"
+              stroke="#DD9F35"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <path d="M182 122l7 8-11-1z" fill="#DD9F35" />
+          </svg>
+        </div>
+        <div class="auth-quote">
+          <p class="display">
+            Việc cần làm, lịch học và ghi chú — gói gọn trong một cuốn sổ.
+          </p>
+          <p>
+            Không cần mở ba app khác nhau. Sổ Tay theo dõi lịch học, việc cần
+            làm và những điều cần nhớ, riêng tư cho từng tài khoản.
+          </p>
+        </div>
+        <div class="feature-pills">
+          <span class="pill s">⌂ Trang chủ</span>
+          <span class="pill a">✓ Việc cần làm</span>
+          <span class="pill v">▦ Lịch</span>
+          <span class="pill c">✎ Ghi chú &amp; nhắc nhở</span>
+        </div>
+      </div>
+
+      <div class="auth-formside">
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button
+              class="auth-tab active"
+              id="tabLogin"
+              onclick="switchAuth('login')"
+            >
+              Đăng nhập
+            </button>
+            <button
+              class="auth-tab"
+              id="tabRegister"
+              onclick="switchAuth('register')"
+            >
+              Đăng ký
+            </button>
+          </div>
+
+          <form id="formLogin" onsubmit="return doLogin(event);">
+            <div class="field">
+              <label>Email hoặc số điện thoại</label>
+              <input
+                type="text"
+                placeholder="ban@email.com"
+                value="linh.tran@fpt.edu.vn"
+                required
+              />
+            </div>
+            <div class="field">
+              <label>Mật khẩu</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value="123456"
+                required
+              />
+            </div>
+            <button class="btn-primary" type="submit">Vào sổ của tôi</button>
+          </form>
+
+          <form
+            id="formRegister"
+            style="display: none"
+            onsubmit="return doLogin(event);"
+          >
+            <div class="field">
+              <label>Họ và tên</label
+              ><input type="text" placeholder="Nguyễn Thị Linh" required />
+            </div>
+            <div class="field">
+              <label>Email</label
+              ><input type="email" placeholder="ban@email.com" required />
+            </div>
+            <div class="field">
+              <label>Mật khẩu</label
+              ><input
+                type="password"
+                placeholder="Tối thiểu 6 ký tự"
+                required
+              />
+            </div>
+            <button class="btn-primary" type="submit">
+              Tạo sổ tay của tôi
+            </button>
+          </form>
+
+          <p class="auth-foot" id="authFootText">
+            Chưa có sổ?
+            <button onclick="switchAuth('register')">Đăng ký miễn phí</button>
+          </p>
+          <p class="auth-hint">
+            Mỗi tài khoản chỉ nhìn thấy việc cần làm, lịch và ghi chú của chính
+            mình — không ai khác truy cập được.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="app">
+      <! thu mở sidebar >
+      <nav
+        class="spine"
+        onmouseenter="expandSidebar()"
+        onmouseleave="collapseSidebar()"
+      >
+        <div class="spine-logo">S</div>
+
+        <div class="spine-nav">
+          <button
+            class="tab-btn active"
+            data-view="home"
+            onclick="switchView('home')"
+          >
+            <svg
+              class="ic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 11l8-7 8 7" />
+              <path d="M6 10v10h12V10" />
+            </svg>
+            <span class="nav-text">Trang chủ</span>
+          </button>
+          <button class="tab-btn" data-view="todo" onclick="switchView('todo')">
+            <svg
+              class="ic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 6h16M4 12h16M4 18h10" />
+            </svg>
+            <span class="nav-text">Việc làm</span>
+          </button>
+          <button
+            class="tab-btn"
+            data-view="calendar"
+            onclick="switchView('calendar')"
+          >
+            <svg
+              class="ic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M3 10h18M8 3v4M16 3v4" />
+            </svg>
+            <span class="nav-text">Lịch</span>
+          </button>
+          <button
+            class="tab-btn"
+            data-view="notes"
+            onclick="switchView('notes')"
+          >
+            <svg
+              class="ic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 4h14v13l-4 4H5z" />
+              <path d="M15 17v4l4-4z" />
+            </svg>
+            <span class="nav-text">Ghi chú</span>
+          </button>
+        </div>
+
+        <div class="spine-user">
+          <div class="avatar">L</div>
+          <button class="logout-btn" onclick="doLogout()">
+            <span class="nav-text">Đăng xuất</span>
+          </button>
+        </div>
+      </nav>
+
+      <main class="main">
+        <div class="topbar-right">
+          <! nút dark light mode>
+          <button
+            class="icon-btn"
+            onclick="toggleDarkMode()"
+            title="Mode tối/sáng"
+            style="margin-right: 8px"
+          >
+            <svg
+              id="themeIcon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+          </button>
+          <div class="bell-wrap">
+            <button class="icon-btn" onclick="toggleBell()">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#232A3D"
+                stroke-width="2"
+              >
+                <path d="M6 8a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6z" />
+                <path d="M10 21a2 2 0 004 0" />
+              </svg>
+              <span class="dot-badge"></span>
+            </button>
+            <div class="bell-panel" id="bellPanel">
+              <!-- Sẽ được điền tự động bằng Javascript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: TRANG CHỦ -->
+        <section class="view active" id="view-home">
+          <div class="section-head"><h2>Trang chủ</h2></div>
+          <div class="section-sub">
+            Hôm nay là ngày gì, lịch đã đặt trước ra sao, và việc nào cần tích
+            cho xong.
+          </div>
+
+          <div class="home-layout">
+            <div class="home-left">
+              <div class="date-box">
+                <div class="date-box-weekday" id="homeWeekday">Thứ Hai</div>
+                <div class="date-box-daynum" id="homeDayNum">1</div>
+                <div class="date-box-month" id="homeMonthYear">
+                  Tháng 1, 2026
+                </div>
+              </div>
+
+              <!-- WIDGET TIẾN ĐỘ HÔM NAY -->
+              <div class="progress-card">
+                <div class="progress-header">
+                  <h3>Tiến độ hôm nay</h3>
+                  <span id="progressText">0/0 hoàn thành</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+              </div>
+              <!-- LỊCH TRÌNH NGÀY HÔM NAY (Mặc định) -->
+              <div class="home-schedule-card">
+                <h3>
+                  Lịch trình
+                  <span
+                    id="homeScheduleDateLabel"
+                    style="color: var(--violet-deep)"
+                    >Hôm nay</span
+                  >
+                </h3>
+                <div id="homeScheduleList"></div>
+              </div>
+            </div>
+
+            <div class="home-right">
+              <!-- Widget Đếm ngược / Sắp tới -->
+              <div class="home-upcoming-card" id="upcomingWidget">
+                <div class="home-checklist-head">
+                  <div>
+                    <h3 class="display">Sắp đến hạn ⏰</h3>
+                    <div class="home-checklist-sub">
+                      Các công việc và ghi chú trong 7 ngày tới.
+                    </div>
+                  </div>
+                  <span class="count" id="homeUpcomingCount">0</span>
+                </div>
+                <ul class="todo-list" id="homeUpcomingList"></ul>
+              </div>
+
+              <div class="home-checklist-card">
+                <div class="home-checklist-head">
+                  <div>
+                    <h3 class="display">Việc cần làm</h3>
+                    <div class="home-checklist-sub">
+                      Tích xong việc nào, việc đó sẽ chuyển sang mục "Đã xong".
+                    </div>
+                  </div>
+                  <span class="count" id="homeChecklistCount">0</span>
+                </div>
+                <ul class="todo-list" id="homeChecklist"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW: VIỆC CẦN LÀM -->
+        <section class="view" id="view-todo">
+          <div class="section-head"><h2>Việc cần làm</h2></div>
+          <div class="section-sub">
+            Thêm việc, đánh dấu khi xong, xoá khi không cần nữa.
+          </div>
+
+          <div class="todo-add">
+            <input
+              type="text"
+              id="todoInput"
+              placeholder="Thêm việc mới, ví dụ: Làm bài tập Giải tích…"
+            />
+            <select id="todoTag">
+              <option value="hoctap">Học tập</option>
+              <option value="canhan">Cá nhân</option>
+              <option value="vat">Việc vặt</option>
+            </select>
+            <button onclick="addTodo()">Thêm</button>
+          </div>
+
+          <div class="todo-cols">
+            <div>
+              <div class="col-title">
+                Đang chờ <span class="count" id="countPending">0</span>
+              </div>
+              <ul class="todo-list" id="listPending"></ul>
+            </div>
+            <div>
+              <div class="col-title">
+                Đã xong <span class="count" id="countDone">0</span>
+              </div>
+              <ul class="todo-list" id="listDone"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW: LỊCH -->
+        <section class="view" id="view-calendar">
+          <div class="section-head"><h2>Lịch</h2></div>
+          <div class="section-sub">
+            Đặt việc cần làm vào một ngày. Chọn "Lặp lại hằng tuần" nếu là việc
+            định kỳ. Hủy việc sẽ xóa toàn bộ chuỗi.
+          </div>
+
+          <div class="cal-layout">
+            <div class="cal-card">
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="monthShift(-1)">‹</button>
+                <div class="cal-month-label" id="calMonthLabel"></div>
+                <button class="cal-nav-btn" onclick="monthShift(1)">›</button>
+                <button class="cal-today-btn" onclick="goToday()">
+                  Hôm nay
+                </button>
+              </div>
+              <div class="cal-weekdays">
+                <span>T2</span><span>T3</span><span>T4</span><span>T5</span
+                ><span>T6</span><span>T7</span><span>CN</span>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+
+            <div class="cal-day-panel" id="calDayPanel"></div>
+          </div>
+        </section>
+
+        <!-- VIEW: GHI CHÚ -->
+        <section class="view" id="view-notes">
+          <div class="section-head"><h2>Ghi chú &amp; nhắc nhở</h2></div>
+          <div class="section-sub">
+            Lưu lại thông tin cần nhớ, đặt nhắc nhở nếu có thời hạn.
+          </div>
+
+          <div class="notes-toolbar">
+            <div></div>
+            <button class="btn-add-note" onclick="toggleNoteForm()">
+              + Ghi chú mới
+            </button>
+          </div>
+
+          <div class="note-form" id="noteForm">
+            <div class="field">
+              <label>Tiêu đề</label
+              ><input
+                type="text"
+                id="noteTitle"
+                placeholder="Ví dụ: Deadline đồ án"
+              />
+            </div>
+            <div class="field">
+              <label>Nội dung</label
+              ><textarea
+                id="noteBody"
+                placeholder="Ghi nội dung cần nhớ…"
+              ></textarea>
+            </div>
+            <div class="note-form-row">
+              <div class="field">
+                <label>Nhắc lúc (không bắt buộc)</label
+                ><input type="datetime-local" id="noteReminder" />
+              </div>
+            </div>
+            <label
+              style="font-size: 13px; color: var(--ink-soft); font-weight: 600"
+              >Màu ghi chú</label
+            >
+            <div class="note-colors">
+              <div
+                class="color-dot selected"
+                style="background: #fde9c8"
+                onclick="pickColor(this, 'note-c1')"
+              ></div>
+              <div
+                class="color-dot"
+                style="background: #dcebda"
+                onclick="pickColor(this, 'note-c2')"
+              ></div>
+              <div
+                class="color-dot"
+                style="background: #f6d9dd"
+                onclick="pickColor(this, 'note-c3')"
+              ></div>
+              <div
+                class="color-dot"
+                style="background: #dce3f0"
+                onclick="pickColor(this, 'note-c4')"
+              ></div>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="btn-primary"
+                style="display: inline-block; width: auto"
+                onclick="addNote()"
+              >
+                Lưu ghi chú
+              </button>
+              <button
+                type="button"
+                class="btn-cancel"
+                onclick="toggleNoteForm()"
+              >
+                Huỷ
+              </button>
+            </div>
+          </div>
+
+          <div class="notes-grid" id="notesGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="test5.js"></script>
+
+  </body>
+</html>
