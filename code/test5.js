@@ -186,6 +186,18 @@ function switchAuth(mode) {
     mode === "register" ? "block" : "none";
 }
 
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const showing = input.type === "text";
+
+  input.type = showing ? "password" : "text";
+  btn.classList.toggle("is-visible", !showing);
+  btn.setAttribute(
+    "aria-label",
+    showing ? "Hiện mật khẩu" : "Ẩn mật khẩu",
+  );
+}
+
 function doLogin(e) {
   e.preventDefault();
   currentUser = document.querySelector(
