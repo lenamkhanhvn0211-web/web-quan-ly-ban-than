@@ -236,6 +236,7 @@ textarea {
   color: var(--ink-soft);
   margin-bottom: 6px;
   font-weight: 600;
+  transition: color 0.2s ease;
 }
 .field input {
   width: 100%;
@@ -246,9 +247,96 @@ textarea {
   font-size: 14.5px;
   color: var(--ink);
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 .field input:focus {
   border-color: var(--amber);
+  box-shadow: 0 0 0 4px rgba(221, 159, 53, 0.15);
+  transform: translateY(-1px);
+}
+.field:focus-within label {
+  color: var(--amber-deep);
+}
+
+/* --- Ẩn/hiện mật khẩu --- */
+.password-wrap {
+  position: relative;
+}
+.password-wrap input {
+  padding-right: 42px;
+}
+.toggle-eye {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+.toggle-eye:hover {
+  color: var(--ink-soft);
+  background: rgba(35, 42, 61, 0.06);
+}
+.toggle-eye.is-visible {
+  color: var(--amber-deep);
+}
+
+/* Icon mắt mở nằm cố định làm nền, đường gạch chéo (.eye-strike) nằm
+   chồng lên trên và tự vẽ/xoá bằng stroke-dashoffset — không còn
+   swap qua lại bằng display nữa nên không bị nảy lên xuống. */
+.toggle-eye svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 19px;
+  height: 19px;
+}
+.toggle-eye .eye-strike line {
+  stroke-dasharray: 32;
+  stroke-dashoffset: 0; /* mặc định: mật khẩu đang ẩn -> có gạch chéo */
+  transition: stroke-dashoffset 0.32s ease;
+}
+/* Khi mật khẩu đang hiện: gạch chéo được vẽ/xoá theo hướng trái
+   sang phải nhờ stroke-dashoffset chạy trên đúng 1 đường line. */
+.toggle-eye.is-visible .eye-strike line {
+  stroke-dashoffset: 32;
+}
+
+/* --- Rung nhẹ khi validate sai --- */
+@keyframes fieldShake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+.field.shake input {
+  animation: fieldShake 0.4s ease;
+  border-color: var(--coral);
 }
 .btn-primary {
   width: 100%;
